@@ -15,13 +15,11 @@
         <div class="container main">
             <div class="row">
                 <div class="col-md-6 side-image">
-                    <!-- ----image---- -->  
                     <img src="/image/tra.png" alt="Image not found">
                 </div>
                 <div class="col-md-6 right">
                     <div class="input-box">
                         <header>ลงชื่อเข้าใช้งาน</header>
-                        <!-- แสดงข้อผิดพลาดหากมี -->
                         <% if (typeof login_errors !== 'undefined') { %>
                             <ul>
                                 <% login_errors.forEach(function(error) { %>

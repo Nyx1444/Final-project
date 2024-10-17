@@ -1,4 +1,3 @@
-// dbConnection.js
 const mysql = require('mysql2/promise');
 
 const dbConnection = mysql.createPool({

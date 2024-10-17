@@ -22,13 +22,11 @@
         h2 {
             text-align: center;
             color: #743ae1;
-            /* สีข้อความ */
         }
 
         table {
             width: 100%;
             table-layout: fixed;
-            /* กำหนดให้ตารางมีขนาดคอลัมน์ที่เท่ากัน */
             border-collapse: collapse;
             margin-top: 20px;
         }
@@ -39,9 +37,7 @@
             border: 1px solid #ddd;
             text-align: left;
             word-wrap: break-word;
-            /* ทำให้ข้อความตัดคำในกรณีที่ยาวเกิน */
             background-color: white !important;
-            /* บังคับให้ทุกหัวตารางและคอลัมน์มีสีขาว */
         }
 
         th {
@@ -50,7 +46,6 @@
 
         tr:nth-child(even) {
             background-color: white !important;
-            /* บังคับให้ทุกแถวมีสีขาวเหมือนกัน */
         }
 
         tr:hover {
@@ -60,7 +55,6 @@
         td {
             font-size: 14px;
             word-wrap: break-word;
-            /* ป้องกันข้อความยาวเกินคอลัมน์ */
             background-color: white !important;
         }
 
@@ -134,66 +128,43 @@
         }
 
 
-        /* จัดให้หัวตารางและสถานะอยู่ตรงกลาง */
         .table th,
         .table td {
             text-align: center;
-            /* จัดข้อความให้อยู่ตรงกลางทั้งในแนวนอน */
             vertical-align: middle;
-            /* จัดข้อความให้อยู่ตรงกลางในแนวตั้ง */
         }
 
-        /* จัดให้ปุ่มอยู่ตรงกลางเซลล์ */
         .table td button {
             display: block;
-            /* ทำให้ปุ่มแสดงเป็นบล็อก */
             margin: 0 auto;
-            /* จัดปุ่มให้อยู่ตรงกลางในแนวนอน */
             padding: 10px 20px;
-            /* เพิ่ม padding เพื่อให้ปุ่มมีขนาดใหญ่ขึ้น */
             text-align: center;
-            /* จัดข้อความภายในปุ่มให้อยู่ตรงกลาง */
         }
-
-
 
         .modal-body p {
             text-align: left;
-            /* จัดข้อความทั้งหมดให้อยู่ด้านซ้าย */
             color: #743ae1;
-            /* ใช้สีม่วงสำหรับข้อความ */
             font-size: 16px;
-            /* ปรับขนาดข้อความตามที่ต้องการ */
             margin-bottom: 10px;
-            /* เพิ่มระยะห่างระหว่างแต่ละบรรทัด */
         }
 
-        /* ทำให้เนื้อหาภายในป็อปอัปอยู่ด้านซ้ายทั้งหมด */
         .modal-body {
             text-align: left;
-            /* จัดเนื้อหาภายในให้ชิดซ้าย */
             padding-left: 20px;
-            /* เพิ่ม padding ทางซ้าย */
             padding-right: 20px;
-            /* เพิ่ม padding ทางขวา */
         }
 
         .action-buttons {
             display: flex;
             justify-content: center;
-            /* จัดปุ่มให้อยู่ตรงกลางในแนวนอน */
             gap: 10px;
-            /* เพิ่มระยะห่างระหว่างปุ่ม */
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 150px 10px auto;
-            /* คอลัมน์แรกกว้าง 150px, คอลัมน์ที่สองแคบสำหรับ :, คอลัมน์ที่สามใช้พื้นที่ที่เหลือ */
             column-gap: 10px;
-            /* ระยะห่างระหว่างคอลัมน์ */
             row-gap: 10px;
-            /* ระยะห่างระหว่างแถว */
             margin-top: 20px;
         }
 
@@ -204,7 +175,6 @@
 
         .colon {
             text-align: center;
-            /* จัดให้ : อยู่ตรงกลาง */
         }
 
         .value {
@@ -213,19 +183,15 @@
 
         .documents-section {
             margin-top: 20px;
-            /* เพิ่มระยะห่างระหว่างตารางข้อมูลและส่วนเอกสาร */
         }
 
         .documents-section p {
             margin-bottom: 15px;
-            /* เพิ่มระยะห่างระหว่างพารากราฟในส่วนเอกสาร */
         }
 
         iframe {
             border: 1px solid #ddd;
-            /* เพิ่มขอบให้ iframe เพื่อความเป็นระเบียบ */
             margin-top: 10px;
-            /* เพิ่มระยะห่างระหว่างข้อความและ iframe */
         }
     </style>
 </head>
@@ -290,7 +256,7 @@
         </aside>
         <div class="main p-3">
         <div class="text-center">
-            <!-- คำขอที่อนุมัติแล้ว -->
+
                 <h2>คำขอที่อนุมัติแล้ว</h2>
                 <table class="table table-striped">
                     <thead>
@@ -325,7 +291,6 @@
                                     </td>
                                 </tr>
 
-                                <!-- ป็อปอัพแสดงข้อมูลทั้งหมด (คำขออนุมัติแล้ว) -->
                                 <div class="modal fade" id="detailModal<%= request.id %>" tabindex="-1"
                                     aria-labelledby="detailModalLabel<%= request.id %>" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -402,7 +367,6 @@
                                                 </div>
 
                                                 <% if (request.has_leave_document) { %>
-                                                    <!-- แยก iframe ออกมาให้อยู่ในบล็อกของตัวเอง -->
                                                     <iframe src="/view-leave-document/<%= request.id %>" width="100%"
                                                         height="500px"></iframe>
                                                     <% } %>
@@ -418,7 +382,6 @@
                                                             </div>
                                                         </div>
                                                         <% if (request.has_medical_certificate) { %>
-                                                            <!-- แยก iframe ออกมาให้อยู่ในบล็อกของตัวเอง -->
                                                             <iframe src="/view-medical-certificate/<%= request.id %>"
                                                                 width="100%" height="500px"></iframe>
                                                             <% } %>
@@ -436,7 +399,6 @@
                     </tbody>
                 </table>
 
-                <!-- คำขอที่ถูกปฏิเสธ -->
                 <h2>คำขอที่ถูกปฏิเสธ</h2>
                 <table class="table table-striped">
                     <thead>
@@ -471,7 +433,6 @@
                                     </td>
                                 </tr>
 
-                                <!-- ป็อปอัพแสดงข้อมูลทั้งหมด (คำขอถูกปฏิเสธ) -->
                                 <div class="modal fade" id="detailModal<%= request.id %>" tabindex="-1"
                                     aria-labelledby="detailModalLabel<%= request.id %>" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -548,7 +509,6 @@
                                                 </div>
 
                                                 <% if (request.has_leave_document) { %>
-                                                    <!-- แยก iframe ออกมาให้อยู่ในบล็อกของตัวเอง -->
                                                     <iframe src="/view-leave-document/<%= request.id %>" width="100%"
                                                         height="500px"></iframe>
                                                     <% } %>
@@ -564,7 +524,6 @@
                                                             </div>
                                                         </div>
                                                         <% if (request.has_medical_certificate) { %>
-                                                            <!-- แยก iframe ออกมาให้อยู่ในบล็อกของตัวเอง -->
                                                             <iframe src="/view-medical-certificate/<%= request.id %>"
                                                                 width="100%" height="500px"></iframe>
                                                             <% } %>

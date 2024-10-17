@@ -40,19 +40,14 @@
         .button-section {
             display: flex;
             justify-content: space-between;
-            /* จัดให้ปุ่มทั้งสองอยู่ข้างซ้ายและขวา */
             align-items: flex-start;
-            /* ทำให้ตำแหน่งของปุ่มและข้อความเริ่มต้นอยู่ในระดับเดียวกัน */
             margin-bottom: 20px;
-            /* เพิ่มระยะห่างด้านล่างเล็กน้อย */
         }
 
         .button-section form {
             display: flex;
             flex-direction: column;
-            /* จัดเรียงปุ่มและฟิลด์แบบ column */
             align-items: flex-start;
-            /* จัดให้องค์ประกอบอยู่ทางซ้าย */
         }
 
         .button-section form p {
@@ -68,30 +63,23 @@
             margin-top: 10px;
         }
 
-        /* ปุ่มสีม่วงตามธีม */
         .btn-purple {
             background-color: #6f42c1 !important;
-            /* สีม่วง */
             border-color: #6f42c1 !important;
-            /* สีขอบของปุ่ม */
             color: white !important;
-            /* สีของตัวอักษรในปุ่ม */
         }
 
         .btn-purple:hover {
             background-color: #5a379b !important;
-            /* สีเมื่อเอาเมาส์ชี้บนปุ่ม */
             border-color: #5a379b !important;
         }
 
-        /* จัดกึ่งกลางเนื้อหาหัวตารางและตาราง */
         table th,
         table td {
             text-align: center;
             vertical-align: middle;
         }
 
-        /* จัดกึ่งกลางสำหรับสถานะการเข้าเรียน */
         .status-present,
         .status-late,
         .status-leave,
@@ -161,11 +149,9 @@
             </div>
         </aside>
 
-        <!-- Start main content -->
         <div class="main p-3">
             <h1 class="text-center">คะแนนนิสิต รายวิชา <%= courseName %> รหัสวิชา: <%= courseCode %>[<%= section %>]
             </h1>
-            <!-- Row for buttons with flexbox to align left and right -->
             <div class="button-section mt-4">
                 <form id="latePenaltyForm" method="POST" action="/updateLateLimit/<%= courseCode %>/<%= section %>">
                     <% if (lateLimit===null || lateLimit===0) { %>
@@ -210,9 +196,9 @@
                                 <%= date.formatted_date %>
                             </th>
                             <% }); %>
-                                <th>การขาด</th> <!-- คอลัมน์สำหรับคะแนนที่จะถูกลบ -->
-                                <th>การเข้าเรียน</th> <!-- คะแนนรวม -->
-                                <th>คะแนน</th> <!-- คอลัมน์สำหรับแสดงคะแนนที่ใช้งานจริง -->
+                                <th>การขาด</th> 
+                                <th>การเข้าเรียน</th>
+                                <th>คะแนน</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,25 +224,22 @@
                                                     <% } %>
                                 </td>
                                 <% }); %>
-                                    <!-- แสดงคะแนนที่จะถูกลบ หรือแสดง - ถ้าไม่มีการหักคะแนน -->
                                     <td>
                                         <%= lateLimit==0 ? '-' : (student.penaltyScore> 0 ? student.penaltyScore : '-')
                                             %>
                                     </td>
                                     <td>
                                         <%= student.totalScore %>
-                                    </td> <!-- คะแนนรวม -->
+                                    </td>
                                     <td>
                                         <%= student.actualScore.toFixed(2) %>
-                                    </td> <!-- แสดงคะแนนที่ใช้งานจริงในรูปแบบทศนิยม 2 ตำแหน่ง -->
+                                    </td>
                         </tr>
                         <% }); %>
                 </tbody>
             </table>
             <div class="button-section mt-4">
-                <!-- ปุ่มสำหรับ Export -->
                 <button id="exportExcelWithTime" class="btn btn-purple">Export คะแนนการเข้าเรียน</button>
-
             </div>
         </div>
     </div>
@@ -282,41 +265,33 @@
 
 
         document.getElementById('exportExcelWithTime').addEventListener('click', function () {
-            // ตรวจสอบว่ามีข้อมูลในตาราง
             var table = document.querySelector('table');
             if (!table) {
                 alert('ไม่มีข้อมูลให้ Export');
                 return;
             }
-        
-            // สร้าง array เพื่อเก็บข้อมูลสำหรับ Excel
             var data = [];
             
-            // ดึงข้อมูลหัวตาราง
             var headers = Array.from(table.querySelectorAll('thead th')).map(header => header.innerText.trim());
             data.push(headers);
         
-            // ดึงข้อมูลจากแถวของนักเรียนแต่ละคน
             var rows = table.querySelectorAll('tbody tr');
             rows.forEach(row => {
                 var rowData = Array.from(row.querySelectorAll('td')).map(cell => cell.innerText.trim());
                 data.push(rowData);
             });
         
-            // สร้าง workbook และ worksheet
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet(data);
         
-            // เพิ่ม worksheet เข้าไปใน workbook
             XLSX.utils.book_append_sheet(wb, ws, "Attendance_with_Time");
         
-            // กำหนดชื่อไฟล์โดยใช้ข้อมูลจาก DOM
-            var h1Text = document.querySelector('h1').innerText;  // ดึงข้อความทั้งหมดจาก h1
-            var courseName = h1Text.match(/รายวิชา (.*?) รหัสวิชา/)[1];  // ดึงชื่อวิชา
-            var courseCode = h1Text.match(/รหัสวิชา: (\d+)/)[1];  // ดึงรหัสวิชา
-            var section = h1Text.match(/\[(.*?)\]/)[1];  // ดึง section
+
+            var h1Text = document.querySelector('h1').innerText;  
+            var courseName = h1Text.match(/รายวิชา (.*?) รหัสวิชา/)[1];  
+            var courseCode = h1Text.match(/รหัสวิชา: (\d+)/)[1]; 
+            var section = h1Text.match(/\[(.*?)\]/)[1];  
         
-            // สร้างชื่อไฟล์
             XLSX.writeFile(wb, `ประวัติเวลาการเข้าเรียน_${courseName}_${courseCode}_${section}.xlsx`);
         });
     </script>

@@ -17,11 +17,8 @@
         .chart-container-wrapper {
             display: flex;
             justify-content: center;
-            /* จัดให้อยู่กลางแนวนอน */
             align-items: center;
-            /* จัดให้อยู่กลางแนวตั้ง */
             flex-direction: column;
-            /* จัดให้อยู่ในแนวตั้ง */
             width: 100%;
             text-align: center;
             margin-top: 40px;
@@ -32,7 +29,6 @@
             max-width: 600px;
             height: 300px;
             margin: 20px auto;
-            /* จัดให้อยู่กลางหน้าตามแนวนอน */
         }
 
         .main {
@@ -52,13 +48,9 @@
             transition: all 0.3s ease !important;
             width: 100% !important;
             display: flex !important;
-            /* ใช้ Flexbox */
             flex-direction: column !important;
-            /* จัดให้อยู่ในแนวตั้ง */
             align-items: center !important;
-            /* จัดให้อยู่กลางในแนวนอน */
             justify-content: center !important;
-            /* จัดให้อยู่กลางในแนวตั้ง */
             height: 100% !important;
         }
 
@@ -74,7 +66,6 @@
 
         h2 {
             color: #743ae1 !important;
-            /* ตั้งสีข้อความของ h2 */
         }
 
         .toggle-btn {
@@ -114,20 +105,14 @@
         #student-list,
         #late-student-list {
             list-style: none;
-            /* ลบสัญลักษณ์ bullet ของรายการ */
             padding: 0;
-            /* ลบ padding ภายใน */
-
             text-align: center;
-            /* จัดให้อยู่กลาง */
         }
 
         #student-list li,
         #late-student-list li {
             display: inline-block;
-            /* จัดให้อยู่ในแนวนอน */
             text-align: center;
-            /* จัดข้อความให้อยู่กลาง */
         }
 
         .chart-container {
@@ -299,13 +284,9 @@
         </div>
     </div>
     <script>
-        // โค้ด JavaScript สำหรับการอัปเดตกราฟและการแสดงผลต่างๆ
-
-        // ดึง context ของ canvas
         var ctxOverall = document.getElementById('overallPieChart').getContext('2d');
         var ctxPie = document.getElementById('pieChart').getContext('2d');
 
-        // ลงทะเบียน Plugin ChartDataLabels
         Chart.register(ChartDataLabels);
         var options = {
             responsive: true,
@@ -321,11 +302,11 @@
                 datalabels: {
                     formatter: (value, context) => {
                         if (value === 0) {
-                            return ''; // ซ่อน label ถ้าค่าเป็นศูนย์
+                            return ''; 
                         }
                         const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
                         const percentage = ((value / total) * 100).toFixed(1);
-                        return `${value} (${percentage}%)`; // แสดงทั้งจำนวนและเปอร์เซ็นต์
+                        return `${value} (${percentage}%)`; 
                     },
                     color: '#333',
                     font: {
@@ -340,7 +321,6 @@
 
 
 
-        // ใช้ options ในการสร้างกราฟ
         var overallPieChart = new Chart(ctxOverall, {
             type: 'pie',
             data: {
@@ -417,11 +397,11 @@
                 hideCharts();
                 if (dates.length > 0) {
                     dateSelect.value = dates[0].date;
-                    await updateCharts(); // อัปเดตกราฟรายวัน
-                    await updateBarChart(); // อัปเดตกราฟแท่ง
+                    await updateCharts(); 
+                    await updateBarChart();
                 }
-                await updateOverallChart(courseCode); // อัปเดต Overall Chart
-                showCharts(); // แสดงกราฟทั้งหมด
+                await updateOverallChart(courseCode); 
+                showCharts();
             } catch (error) {
                 console.error('Error fetching dates:', error);
                 hideCharts();
@@ -451,13 +431,13 @@
                 hideCharts();
 
                 if (dates.length > 0) {
-                    dateSelect.value = dates[0].date; // เลือกวันแรก
-                    updateChartTitleWithDate(); // อัปเดตชื่อกราฟให้แสดงวันที่แรกที่เลือก
-                    await updateCharts(); // อัปเดตกราฟรายวัน
-                    await updateBarChart(); // อัปเดตกราฟแท่ง
+                    dateSelect.value = dates[0].date; 
+                    updateChartTitleWithDate();
+                    await updateCharts();
+                    await updateBarChart();
                 }
-                await updateOverallChart(courseCode); // อัปเดต Overall Chart
-                showCharts(); // แสดงกราฟทั้งหมด
+                await updateOverallChart(courseCode);
+                showCharts();
             } catch (error) {
                 console.error('Error fetching dates:', error);
                 hideCharts();
@@ -473,19 +453,18 @@
                 return;
             }
         
-            updateChartTitleWithDate(); // อัปเดตชื่อกราฟให้แสดงวันที่ใหม่
+            updateChartTitleWithDate(); 
         
-            // อัปเดตกราฟเมื่อเลือกวันที่ใหม่
             await updateCharts();
             await updateBarChart();
-            showCharts(); // แสดงกราฟ
+            showCharts(); 
         });
         
 
-        // ฟังก์ชันสำหรับอัปเดตชื่อกราฟตามวันที่ที่เลือก
+
         function updateChartTitleWithDate() {
             const dateSelect = document.getElementById('dateSelect');
-            const selectedDate = dateSelect.options[dateSelect.selectedIndex].text; // ดึงข้อความที่แสดงใน option ที่เลือก
+            const selectedDate = dateSelect.options[dateSelect.selectedIndex].text;
             const pieChartTitle = document.getElementById('pieChartTitle');
             const barChartTitle = document.getElementById('barChartTitle');
             pieChartTitle.textContent = `แผนภูมิวงกลมแสดงสถานะการเข้าชั้นเรียนของวันที่ ${selectedDate}`;
@@ -552,7 +531,6 @@
                     return;
                 }
         
-                // กรองข้อมูลที่ time_range ไม่ใช่ null
                 const filteredData = data.filter(record => record.time_range !== null);
         
                 const labels = filteredData.map(record => record.time_range);
@@ -586,7 +564,6 @@
                     return;
                 }
         
-                // กรองข้อมูลที่ time_range ไม่ใช่ null
                 const filteredData = data.filter(record => record.time_range !== null);
         
                 const labels = filteredData.map(record => record.time_range);
@@ -602,7 +579,6 @@
     </script>
 
     <script>
-        // ข้อมูลนิสิตที่ขาดเรียนมากที่สุดที่ถูกส่งจากเซิร์ฟเวอร์
         let absentStudents;
         let lateStudents;
 
@@ -620,11 +596,9 @@
             lateStudents = [];
         }
 
-        // ตั้งตัวแปร index เพื่อใช้ในการวนลูปเปลี่ยนข้อมูล
         let currentAbsentIndex = 0;
         let currentLateIndex = 0;
 
-        // ฟังก์ชันสำหรับอัปเดตข้อมูลนิสิตขาดเรียนในบล็อก
         function updateAbsentBlock() {
             if (!Array.isArray(absentStudents) || absentStudents.length === 0) {
                 document.getElementById('absent-block').innerHTML = `<h2>ไม่มีข้อมูลนิสิตที่ขาดเรียน</h2>`;
@@ -643,11 +617,9 @@
         </ol>
     
     `;
-            // เปลี่ยน index เพื่อแสดงนิสิตคนถัดไป
             currentAbsentIndex = (currentAbsentIndex + 1) % absentStudents.length;
         }
 
-        // ฟังก์ชันสำหรับอัปเดตข้อมูลนิสิตมาสายในบล็อก
         function updateLateBlock() {
             if (!Array.isArray(lateStudents) || lateStudents.length === 0) {
                 document.getElementById('late-block').innerHTML = `<h2>ไม่มีข้อมูลนิสิตที่มาสาย</h2>`;
@@ -666,15 +638,12 @@
         </ol>
         
     `;
-            // เปลี่ยน index เพื่อแสดงนิสิตคนถัดไป
             currentLateIndex = (currentLateIndex + 1) % lateStudents.length;
         }
 
-        // เรียกใช้ฟังก์ชันทุกๆ 3 วินาทีเพื่อเปลี่ยนข้อมูล
         setInterval(updateAbsentBlock, 3000);
         setInterval(updateLateBlock, 3000);
 
-        // เรียกใช้ฟังก์ชันทันทีเมื่อโหลดหน้า
         updateAbsentBlock();
         updateLateBlock();
 

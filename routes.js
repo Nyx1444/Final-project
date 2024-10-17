@@ -1,4 +1,3 @@
-// routes.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -9,9 +8,6 @@ const dateFns = require('date-fns');
 const { format } = require('date-fns');
 const multer = require('multer');
 const upload = multer();
-
-
-
 
 // ฟังก์ชันสำหรับแปลงวันที่เป็นรูปแบบ YYYY-MM-DD
 function formatDateForMySQL(dateString) {
@@ -29,8 +25,6 @@ function getStatusClass(status) {
         default: return 'text-white';
     }
 }
-
-
 
 // Middleware
 const ifNotLoggedIn = (req, res, next) => {
@@ -75,9 +69,6 @@ const ownsCourse = async (req, res, next) => {
     }
 };
 
-module.exports = { ownsCourse };
-
-
 const ownsCourseFromBody = async (req, res, next) => {
     const userId = req.session.userID;
     const { courseCode, section } = req.body; // ดึงข้อมูลจาก req.body
@@ -106,6 +97,10 @@ const ownsCourseFromBody = async (req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 };
+module.exports = { ownsCourse };
+
+
+
 
 // Page
 // Register
@@ -209,6 +204,7 @@ router.get('/Classroom', ifNotLoggedIn, async (req, res) => {
     }
 });
 
+//-----------------------------------------------------------------------------------------------------------------
 // Students list Page
 router.get('/students_class/:courseCode/:section', ifNotLoggedIn, ownsCourse, async (req, res) => {
     const { courseCode, section } = req.params;
@@ -334,6 +330,7 @@ router.get('/students/:courseCode/:section/edit', ifNotLoggedIn, ownsCourse, asy
     }
 });
 
+//-----------------------------------------------------------------------------------------------------------------
 // Attendance-rules Page
 router.get('/attendance-rules/:courseCode/:section', ifNotLoggedIn, ownsCourse, async (req, res) => {
     const { courseCode, section } = req.params;
@@ -366,6 +363,32 @@ router.get('/attendance-rules/:courseCode/:section', ifNotLoggedIn, ownsCourse, 
     }
 });
 
+// Attendance Rules page
+router.get('/attendance-rules/:courseCode/:section', ifNotLoggedIn, ownsCourse, async (req, res) => {
+    const { courseCode, section } = req.params;
+    try {
+        const [[course]] = await dbConnection.execute(`
+            SELECT course_name FROM courses WHERE course_code = ? AND section = ?
+        `, [courseCode, section]);
+
+        const [rules] = await dbConnection.execute(`
+            SELECT * FROM attendance_rules
+            WHERE course_code = ? AND section = ?
+            ORDER BY date
+        `, [courseCode, section]);
+
+        res.render('AttendanceRules', {
+            courseCode,
+            section,
+            courseName: course ? course.course_name : "Unknown Course",
+            attendanceRules: rules, teacherId: teacherId
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+//-----------------------------------------------------------------------------------------------------------------
 // Calculate 
 router.get('/calculate', ifNotLoggedIn, async (req, res) => {
     const teacherId = req.session.userID;
@@ -571,9 +594,7 @@ router.post('/updateMaxScore/:courseCode/:section', ifNotLoggedIn, ownsCourse, a
     }
 });
 //-----------------------------------------------------------------------------------------------------------------
-
-
-// Route สำหรับแสดงหน้า EJS
+// graph
 router.get('/graph', ifNotLoggedIn, ownsCourse, async (req, res) => {
     const teacherId = req.session.userID;
 
@@ -823,8 +844,6 @@ router.get('/getAttendanceDataForAllDates', async (req, res) => {
     }
 });
 
-
-
 //-----------------------------------------------------------------------------------------------------------------
 
 router.get('/leave-requests/:teacherId', ifNotLoggedIn, ownsCourse, async (req, res) => {
@@ -923,14 +942,14 @@ router.get('/view-medical-certificate/:id', async (req, res) => {
     }
 });
 
-// Route สำหรับการอนุมัติหรือปฏิเสธคำขอลางาน
+// Route สำหรับการอนุมัติหรือปฏิเสธคำขอลา
 router.post('/web/approve-leave-request/:leaveRequestId', async (req, res) => {
     const { leaveRequestId } = req.params;
-    let { status, comment } = req.body; // รับค่า status และ comment จากฟอร์ม
-    const approver_id = req.session.userID; // ดึง approver_id จาก session
+    let { status, comment } = req.body; 
+    const approver_id = req.session.userID; 
 
     // ตรวจสอบว่าค่า status ตรงกับตัวเลือกใน ENUM
-    const validStatuses = ['อนุมัติ', 'ไม่อนุมัติ']; // กำหนดค่า ENUM ที่ถูกต้อง
+    const validStatuses = ['อนุมัติ', 'ไม่อนุมัติ']; 
     if (!validStatuses.includes(status)) {
         return res.status(400).json({ success: false, error: 'Invalid status value' });
     }
@@ -964,6 +983,7 @@ router.post('/web/approve-leave-request/:leaveRequestId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+//-----------------------------------------------------------------------------------------------------------------
 
 // API register
 router.post('/register', [
@@ -1085,33 +1105,6 @@ router.put('/api/attendance-rules/:id', ifNotLoggedIn, async (req, res) => {
     }
 });
 
-// Attendance Rules page
-router.get('/attendance-rules/:courseCode/:section', ifNotLoggedIn, ownsCourse, async (req, res) => {
-    const { courseCode, section } = req.params;
-    try {
-        const [[course]] = await dbConnection.execute(`
-            SELECT course_name FROM courses WHERE course_code = ? AND section = ?
-        `, [courseCode, section]);
-
-        const [rules] = await dbConnection.execute(`
-            SELECT * FROM attendance_rules
-            WHERE course_code = ? AND section = ?
-            ORDER BY date
-        `, [courseCode, section]);
-
-        res.render('AttendanceRules', {
-            courseCode,
-            section,
-            courseName: course ? course.course_name : "Unknown Course",
-            attendanceRules: rules, teacherId: teacherId
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-
 // Save attendance
 router.post('/save-attendance', ifNotLoggedIn, ownsCourse, async (req, res) => {
     const { courseCode, section, attendance } = req.body;
@@ -1228,6 +1221,7 @@ router.post('/save-attendance', ifNotLoggedIn, ownsCourse, async (req, res) => {
         connection.release();
     }
 });
+
 
 // ฟังก์ชันตรวจสอบการเข้าเรียน
 function checkAttendance(currentTime, lateUntilTime, courseId, sectionId) {
@@ -1373,7 +1367,7 @@ const markAbsentStudents = async (courseCode, section, date) => {
 };
 
 
-
+//-------------------------------------------------------------------------------------------------------------
 // Route สำหรับการส่งข้อความไปยังนิสิตที่ลงทะเบียนในวิชาเฉพาะ
 router.post('/send-message', ifNotLoggedIn, upload.none(), async (req, res) => {
     console.log('Request Body:', req.body);
@@ -1467,7 +1461,7 @@ router.get('/notification', ifNotLoggedIn, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
+//-------------------------------------------------------------------------------------------------------------
 // Route สำหรับบันทึกการเข้าเรียน
 router.post('/log_attendance', async (req, res) => {
     const { id_number, major, minor, schedule_date, schedule_time } = req.body;
@@ -1498,25 +1492,20 @@ router.post('/log_attendance', async (req, res) => {
             [id_number, major, minor, schedule_date, schedule_time]
         );
 
-        // ตรวจสอบว่ามีการบันทึกการเข้าเรียนสำหรับวันนี้แล้วหรือไม่
+        // ตรวจสอบว่ามีการบันทึกการเข้าเรียนสำหรับวันนี้แล้วหรือไม่ใน attendance
         const [[existingAttendance]] = await connection.execute(`
             SELECT * FROM attendance
             WHERE course_code = ? AND section = ? AND student_id = ? AND date = ?
         `, [course_code, section, id_number, schedule_date]);
 
         if (existingAttendance) {
-            // ถ้ามีข้อมูลอยู่แล้ว ให้อัพเดทเฉพาะเวลาเช็คอิน โดยไม่เปลี่ยนสถานะ
-            await connection.execute(`
-                UPDATE attendance 
-                SET check_in_time = ?
-                WHERE course_code = ? AND section = ? AND student_id = ? AND date = ?
-            `, [schedule_time, course_code, section, id_number, schedule_date]);
-
+            // ถ้ามีข้อมูลอยู่แล้ว ให้ข้ามการอัปเดตและไม่ทำการอัปเดตเวลาเช็คอินซ้ำ
+            console.log(`Attendance for student ${id_number} on ${schedule_date} already exists. Skipping any updates.`);
             await connection.commit();
             return res.status(200).json({
-                message: 'Attendance updated with new check-in time',
+                message: 'Attendance already recorded',
                 status: existingAttendance.status,
-                checkInTime: schedule_time
+                checkInTime: existingAttendance.check_in_time
             });
         } else {
             // ถ้ายังไม่มีข้อมูล ให้คำนวณสถานะใหม่
@@ -1560,7 +1549,6 @@ router.post('/log_attendance', async (req, res) => {
         connection.release();
     }
 });
-
 
 //-------------------------------------------------------------------------------------------------------------
 // ล็อกอินแอพ
@@ -2223,7 +2211,6 @@ router.delete('/api/attendance-rule/:id', async (req, res) => {
 // Get attendance summary for PBox1
 router.get('/api/pbox1-attendance-summary/:courseCode/:section/:startDate/:endDate', async (req, res) => {
     const { courseCode, section, startDate, endDate } = req.params;
-
     try {
         // Fetch attendance data
         const [results] = await dbConnection.execute(`

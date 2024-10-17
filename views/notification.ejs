@@ -75,7 +75,6 @@
                 <div class="container mt-5">
                     <h2>ส่งการแจ้งเตือน</h2>
             
-                    <!-- ฟอร์มส่งข้อความไปยังนิสิต -->
                     <form id="messageForm" action="/send-message" method="POST">
                         <div class="form-group mb-3">
                             <label for="courseCode">ระบุรายวิชา</label>
@@ -123,7 +122,6 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body" id="errorMessage">
-                                    <!-- ข้อความจะแสดงที่นี่ -->
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
@@ -141,19 +139,18 @@
     <script src="Sidebar.js"></script>
     <script>
         document.getElementById('messageForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
+            event.preventDefault(); 
             
             const courseCode = document.getElementById('courseCode').value;
             const title = document.getElementById('title').value;
             const message = document.getElementById('message').value;
         
-            // ตรวจสอบว่าข้อมูลครบถ้วน
             if (!courseCode || !title || !message) {
                 alert('Please fill in all fields.');
                 return;
             }
         
-            const formData = new FormData(this); // ดึงข้อมูลจากฟอร์ม
+            const formData = new FormData(this);
         
             fetch('/send-message', {
                 method: 'POST',
@@ -162,14 +159,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // แสดง Modal เมื่อส่งข้อความสำเร็จ
                     var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                     successModal.show();
         
-                    // ล้างค่าฟอร์ม
                     document.getElementById('messageForm').reset();
                 } else {
-                    // แสดง Modal เมื่อเกิดข้อผิดพลาด
                     document.getElementById('errorMessage').textContent = data.error;
                     var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                     errorModal.show();
@@ -177,7 +171,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                // แสดง Modal เมื่อเกิดข้อผิดพลาดในการเชื่อมต่อ
                 document.getElementById('errorMessage').textContent = 'An unexpected error occurred. Please try again later.';
                 var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                 errorModal.show();

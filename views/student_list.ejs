@@ -53,7 +53,6 @@
             color: #0c5460 !important;
         }
         
-        /* Button styling */
         .btn-primary {
             background-color: #6f42c1 !important;
             border-color: #6f42c1 !important;
@@ -190,10 +189,10 @@
                                             <% } %>
                                         </div>
                                         <div>
-                                            <% if (attendance && attendance.is_edited == 1) { %> <!-- ตรวจสอบว่าแก้ไขแล้วหรือไม่ -->
+                                            <% if (attendance && attendance.is_edited == 1) { %> 
                                                 ถูกแก้ไข
                                             <% } else if (attendance && attendance.check_in_time) { %>
-                                                <%= attendance.check_in_time %> <!-- แสดงเวลาเช็คชื่อถ้าไม่ได้แก้ไข -->
+                                                <%= attendance.check_in_time %>
                                             <% } else { %>
                                                 -
                                             <% } %>
@@ -217,32 +216,28 @@
         crossorigin="anonymous"></script>
     <script src="/Sidebar.js"></script>
     <script>
-        // ข้อมูลที่จำเป็นสำหรับการสร้าง Excel
+
         var dates = JSON.parse('<%- JSON.stringify(dates) %>');
         var students = JSON.parse('<%- JSON.stringify(students) %>');
-        var courseName = '<%= courseName %>'; // ใช้สำหรับแสดงชื่อวิชา
-        var courseCode = '<%= courseCode %>'; // ใช้สำหรับแสดงเป็น string
-        var section = '<%= section %>'; // ใช้สำหรับแสดงเป็น string
+        var courseName = '<%= courseName %>'; 
+        var courseCode = '<%= courseCode %>'; 
+        var section = '<%= section %>';
 
         console.log('Dates:', dates);
         console.log('Students:', students);
 
-        // ฟังก์ชันทำให้ชื่อวิชาปลอดภัยสำหรับการใช้ในชื่อไฟล์
         function sanitizeFileName(name) {
-            return name.replace(/[^a-zA-Z0-9ก-๙]/g, "_"); // แทนที่ตัวอักษรที่ไม่ใช่ a-z, A-Z, 0-9, ก-๙ ด้วย "_"
+            return name.replace(/[^a-zA-Z0-9ก-๙]/g, "_");
         }
 
         document.getElementById('exportExcel').addEventListener('click', function () {
-            // ตรวจสอบว่ามีข้อมูล dates และ students
             if (!dates || dates.length === 0 || !students || students.length === 0) {
                 alert('ไม่มีข้อมูลให้ Export');
                 return;
             }
 
-            // สร้าง array เพื่อเก็บข้อมูลสำหรับ Excel
             var data = [['รหัสนิสิต', 'ชื่อสกุล', ...dates.map(date => date.short_date)]];
 
-            // เพิ่มข้อมูลนักเรียนแต่ละคน
             students.forEach(student => {
                 var row = [
                     student.id_number,
@@ -257,29 +252,23 @@
                 data.push(row);
             });
 
-            // สร้าง workbook และ worksheet
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet(data);
 
-            // เพิ่ม worksheet เข้าไปใน workbook
             XLSX.utils.book_append_sheet(wb, ws, "Attendance");
 
-            // สร้างไฟล์ Excel และดาวน์โหลด
-            var sanitizedCourseName = sanitizeFileName(courseName); // ใช้ฟังก์ชัน sanitize
+            var sanitizedCourseName = sanitizeFileName(courseName);
             XLSX.writeFile(wb, `ประวัติการเข้าเรียน_${sanitizedCourseName}_${courseCode}_${section}.xlsx`);
         });
 
         document.getElementById('exportExcelWithTime').addEventListener('click', function () {
-            // ตรวจสอบว่ามีข้อมูล dates และ students
             if (!dates || dates.length === 0 || !students || students.length === 0) {
                 alert('ไม่มีข้อมูลให้ Export');
                 return;
             }
 
-            // สร้าง array เพื่อเก็บข้อมูลสำหรับ Excel
             var data = [['รหัสนิสิต', 'ชื่อ-สกุล', ...dates.map(date => date.short_date)]];
 
-            // เพิ่มข้อมูลนักเรียนแต่ละคน
             students.forEach(student => {
                 var row = [
                     student.id_number,
@@ -291,15 +280,12 @@
                 data.push(row);
             });
 
-            // สร้าง workbook และ worksheet
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet(data);
 
-            // เพิ่ม worksheet เข้าไปใน workbook
             XLSX.utils.book_append_sheet(wb, ws, "Attendance_with_Time");
 
-            // สร้างไฟล์ Excel และดาวน์โหลด
-            var sanitizedCourseName = sanitizeFileName(courseName); // ใช้ฟังก์ชัน sanitize
+            var sanitizedCourseName = sanitizeFileName(courseName); 
             XLSX.writeFile(wb, `ประวัติเวลาการเข้าเรียน_${sanitizedCourseName}_${courseCode}_${section}.xlsx`);
         });
     </script>
